@@ -5,9 +5,17 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
+	"unicode"
 )
 
 func main() {
+	requiredLetter := getValidInput("Enter the required letter (one letter only): ", 1, "")
+	otherLetters := getValidInput("Enter the other letters (six letters, no duplicates): ", 6, requiredLetter)
+
+	fmt.Println("Required Letter:", requiredLetter)
+	fmt.Println("Other Letters:", otherLetters)
+
 	// Load words from the file
 	words, err := loadWords("words/filtered_words.txt")
 	if err != nil {
@@ -73,4 +81,40 @@ func sortUniqueLetters(word string) string {
 	})
 
 	return string(uniqueLetters)
+}
+
+// getValidInput prompts the user for input and validates it.
+func getValidInput(prompt string, length int, exclude string) string {
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		fmt.Print(prompt)
+		input, _ := reader.ReadString('\n')
+		input = strings.ToUpper(strings.TrimSpace(input))
+
+		if isValidInput(input, length, exclude) {
+			return input
+		}
+
+		fmt.Println("Invalid input. Please try again.")
+	}
+}
+
+// isValidInput checks if the input is valid based on length, characters, and exclusion criteria.
+func isValidInput(input string, length int, exclude string) bool {
+	if len(input) != length {
+		return false
+	}
+
+	charMap := make(map[rune]bool)
+	for _, char := range input {
+		if !unicode.IsLetter(char) || strings.ContainsRune(exclude, char) {
+			return false
+		}
+		if charMap[char] {
+			return false // Duplicate character found
+		}
+		charMap[char] = true
+	}
+
+	return true
 }
