@@ -16,11 +16,38 @@ import (
 )
 
 func main() {
-	requiredLetter := getValidInput("Enter the required letter (one letter only): ", 1, "")
-	otherLetters := getValidInput("Enter the other letters (six letters, no duplicates): ", 6, requiredLetter)
+	var requiredLetter, otherLetters string
+	var validArgs bool
 
-	fmt.Println("Required Letter:", requiredLetter)
-	fmt.Println("Other Letters:", otherLetters)
+	// Ah, command line arguments! For the user who comes prepared with letters in hand. But do they have enough?
+	if len(os.Args) > 1 && len(os.Args) < 3 {
+		// Seems like we're a bit short on arguments. Counting to 3 is crucial, just like knowing the alphabet!
+		fmt.Fprintln(os.Stderr, "Missing arguments. Please provide both the required letter and the six other letters.")
+		os.Exit(1)
+	}
+
+	// Aha! Exactly three arguments, just like Goldilocks' porridge – this might be just right.
+	if len(os.Args) == 3 {
+
+		cmdRequiredLetter := os.Args[1]
+		cmdOtherLetters := os.Args[2]
+
+		// Let's see if these letters pass the test. We appreciate effort, but we need accuracy!
+		if isValidInput(cmdRequiredLetter, 1, "") && isValidInput(cmdOtherLetters, 6, cmdRequiredLetter) {
+			requiredLetter = strings.ToUpper(cmdRequiredLetter)
+			otherLetters = strings.ToUpper(cmdOtherLetters)
+			validArgs = true
+		} else {
+			// Oops! Those letters didn't make the cut. Let's tell them gently but firmly.
+			fmt.Fprintln(os.Stderr, "Invalid command line arguments. We're looking for one required letter and six others, no more, no less.")
+			os.Exit(1)
+		}
+	}
+	// No command line arguments? No problem! Let's ask the user nicely for the letters.
+	if !validArgs {
+		requiredLetter = getValidInput("Enter the required letter (one letter only): ", 1, "")
+		otherLetters = getValidInput("Enter the other letters (six letters, no duplicates): ", 6, requiredLetter)
+	}
 
 	// Load words from the file
 	words, err := loadWords("assets/possible_answers.txt")
@@ -40,6 +67,7 @@ func main() {
 	// Spelling Bee puzzle criteria and is sorted alphabetically.
 	validWords := findValidWords(requiredLetter, otherLetters, wordMap)
 
+	// TODO: Sprinkle some magic here? Group words by their starting letter?
 	for _, word := range validWords {
 		fmt.Println(word)
 	}
