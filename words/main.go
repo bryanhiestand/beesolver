@@ -1,3 +1,5 @@
+// This is a little helper script to slightly reduce the words list based on the game rules
+// It really only reduces the possible answer set by ~25%, but I kept this around since I already wrote it
 package main
 
 import (
@@ -7,8 +9,9 @@ import (
 )
 
 func main() {
-	// Open the input file
-	inputFile, err := os.Open("words.txt")
+	// Open the input file, which is just a scrabble dictionary.
+	// The New York Times does not maintain an official word list.
+	inputFile, err := os.Open("../assets/words.txt")
 	if err != nil {
 		fmt.Println("Error opening input file:", err)
 		return
@@ -16,7 +19,7 @@ func main() {
 	defer inputFile.Close()
 
 	// Create the output file
-	outputFile, err := os.Create("filtered_words.txt")
+	outputFile, err := os.Create("../assets/possible_answers.txt")
 	if err != nil {
 		fmt.Println("Error creating output file:", err)
 		return

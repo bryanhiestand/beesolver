@@ -1,3 +1,9 @@
+// Welcome to the BeeSolver! This nifty package is your secret weapon for tackling
+// the New York Times Spelling Bee puzzles. It's not just about finding words; it's
+// about embarking on a lexical adventure. With functions to sift through word lists
+// and conjure up solutions, BeeSolver transforms a jumble of letters into a celebration
+// of words. Whether you're a puzzle enthusiast or a word wizard in the making,
+// this is where your journey with letters begins. Let's dive into the hive!
 package main
 
 import (
@@ -17,7 +23,7 @@ func main() {
 	fmt.Println("Other Letters:", otherLetters)
 
 	// Load words from the file
-	words, err := loadWords("words/filtered_words.txt")
+	words, err := loadWords("assets/possible_answers.txt")
 	if err != nil {
 		fmt.Println("Error loading words:", err)
 		return

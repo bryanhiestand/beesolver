@@ -1,3 +1,3 @@
-module bryanhiestand/go-bee
+module bryanhiestand/beesolver
 
 go 1.21.5
