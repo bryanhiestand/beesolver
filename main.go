@@ -56,7 +56,7 @@ func loadWords(filePath string) ([]string, error) {
 	var words []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		words = append(words, scanner.Text())
+		words = append(words, strings.ToUpper(scanner.Text()))
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -108,7 +108,7 @@ func getValidInput(prompt string, length int, exclude string) string {
 		input = strings.ToUpper(strings.TrimSpace(input))
 
 		if isValidInput(input, length, exclude) {
-			return input
+			return strings.ToUpper(input)
 		}
 
 		fmt.Println("Invalid input. Please try again.")
