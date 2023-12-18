@@ -39,7 +39,7 @@ BeeSolver is not just a tool; it's a journey through the alphabetic wilderness, 
 - If you find bugs, feel free to fix them. ChatGPT is brilliant but not infallible, and I'm... well, I didn't actually write any of this code!
 - My attached word list is not the same one the NY Times uses. If you find a better one, let me know.
 - Cheating is not cool.
-- Please solve puzzles responsbily.
+- Please solve puzzles responsibly.
 
 ## License
 
