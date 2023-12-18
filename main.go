@@ -23,14 +23,19 @@ func main() {
 		return
 	}
 
-	// Generate the map
+	// Generate a map from the list of words where each key is a word from the list and its corresponding value
+	// is a string of the unique letters of that word, sorted alphabetically. This map is used for efficiently
+	// checking whether a given combination of letters forms a valid word in the filtered word list.
 	wordMap := generateMap(words)
 
-	// Printing a small portion of the map for demonstration
-	for k, v := range wordMap {
-		fmt.Println(k, ":", v)
-		// Example: Break after printing 10 items for demonstration
-		break
+	// Find valid words using the input letters. This function filters the words from the wordMap to find those
+	// that include the required letter and are composed exclusively of the combined set of the required and
+	// other optional letters. The resulting list, validWords, contains all the words that meet the New York Times
+	// Spelling Bee puzzle criteria and is sorted alphabetically.
+	validWords := findValidWords(requiredLetter, otherLetters, wordMap)
+
+	for _, word := range validWords {
+		fmt.Println(word)
 	}
 }
 
@@ -83,7 +88,12 @@ func sortUniqueLetters(word string) string {
 	return string(uniqueLetters)
 }
 
-// getValidInput prompts the user for input and validates it.
+// getValidInput prompts the user for input based on the provided prompt message. It validates the input to ensure
+// it adheres to the rules of the Spelling Bee game: the input must only contain English letters (A-Z),
+// must meet the specified length criteria (one letter for the required letter, six for the other letters), and
+// must not include any characters specified in the 'exclude' parameter (to prevent duplication of the required letter
+// in the list of other letters). The function repeatedly prompts the user until valid input is provided, enforcing
+// the game's input rules for letter selection.
 func getValidInput(prompt string, length int, exclude string) string {
 	reader := bufio.NewReader(os.Stdin)
 	for {
@@ -116,5 +126,38 @@ func isValidInput(input string, length int, exclude string) bool {
 		charMap[char] = true
 	}
 
+	return true
+}
+
+// findValidWords finds and returns words that contain the required letter and are made only of the allowed letters.
+func findValidWords(requiredLetter, otherLetters string, wordMap map[string]string) []string {
+	var validWords []string
+	allowedLetters := requiredLetter + otherLetters
+
+	for word, sortedUniqueLetters := range wordMap {
+		if contains(sortedUniqueLetters, requiredLetter) && onlyContains(sortedUniqueLetters, allowedLetters) {
+			validWords = append(validWords, word)
+		}
+	}
+
+	sort.Strings(validWords) // I like my word lists alphabetical.
+	return validWords
+}
+
+// contains checks if the string 's' contains the substring 'sub'.
+// 'sub' is the letter that Spelling Bee requires for a word to be a valid answer.
+func contains(s, sub string) bool {
+	return strings.Contains(s, sub)
+}
+
+// onlyContains checks if the string 's' contains only the characters in 'allowed'.
+// words are only valid answers in Spelling Bee if they only use a combination of
+// the required and optional letters.
+func onlyContains(s, allowed string) bool {
+	for _, char := range s {
+		if !strings.ContainsRune(allowed, char) {
+			return false
+		}
+	}
 	return true
 }
